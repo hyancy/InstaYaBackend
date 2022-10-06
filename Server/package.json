@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "bcrypt-nodejs": "^0.0.3",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
@@ -21,6 +22,7 @@
   },
   "devDependencies": {
     "@types/bcrypt-nodejs": "^0.0.31",
+    "morgan": "^1.10.0",
     "nodemon": "^2.0.20"
   }
 }

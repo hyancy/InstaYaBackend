@@ -1,38 +1,48 @@
 const express = require('express');
 const router = express.Router();
-const {User} = require('../models/userModel');
-const Joi = require("joi");
 const bcrypt = require("bcrypt");
+const userSchema = require('../models/userModel');
 
 router.post('/signin', async (request, response) =>{
-    try{
-        const {error} = validate(request.body);
-        if(error)
-            return response.status(400).send({ message:error.details[0].message });
+        try{
+        // const {error} = validate(request.body);
+        // if(error){
+        //         console.log("There's an error")
+        //     return response.status(400).send({ message:error.details[0].message });
+        // }
+        //
+        const { username, password }  = request.body
+        const user = await userSchema.findOne({username}).select('+password');
 
-        const user = await User.findOne({ User: request.body.User});
         if (!user)
             return response.status(401).send({ message: "Usuario o contraseña inválidos" });
 
-        const validPassword = await bcrypt.compare(
-            request.body.Password, user.Password,
-        );
-        if (!validPassword)
-            return response.status(401).send({ message:"Usuario o contraseña inválidos" });
+        const matchstatus = await bcrypt.compare(password, user.password);
+        if(matchstatus == true){
+        console.log('logged in!'); 
+        user.password = "";
+        return response.send(user);
 
-        const token = user.generateAuthToken();
-        response.status(200).send({accestoken:token});
+        }
+        else{
+        console.log('wrong id or password!'); 
+        return response.send({error: "Wrong ID or Password"});
+        }
+
+
+
     } catch(error){
-        response.status(500).send({message:"Error interno"});
+        console.log(error)
+        response.status(500).send({message: "There's an error"});
     }
 });
 
-const validate = (data) => {
-    const schema = Joi.object({
-        User: Joi.string().required().label("User"),
-        Password: Joi.string().required().label("Password")
-    });
-    return schema.validate(data);
-}
+// const validate = (data) => {
+//     const schema = Joi.object({
+//         User: Joi.string().required().label("username"),
+//         Password: Joi.string().required().label("password")
+//     });
+//     return schema.validate(data);
+// }
 
 module.exports = router
