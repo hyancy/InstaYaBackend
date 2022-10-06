@@ -4,14 +4,19 @@ const express = require('express');
 const router = express.Router();
 // Importar modelo de datos userSchema
 const userSchema = require('../models/userModel');
+const bcrypt = require("bcrypt");
 
 // Crear los endpoints/rutas para la API que tenga los metodos HTTP (CRUD)
 // Crear función para crear un usuario nuevo (metodo POST)
-router.post('/users', (req, res) => {
+router.post('/users', async (req, res) => {
     const user = userSchema(req.body);
+    const hashedPassword = await bcrypt.hash(req.body.password, 12)
+    user.password = hashedPassword
+    // user.password
     user.save()
         .then((data) => res.json(data))
         .catch((error) => console.error({ message: error }))
+    console.log(`Se ha agregado un nuevo usuario`);
 });
 
 
@@ -27,13 +32,13 @@ router.get('/users/:id', (req, res) => {
 
 
 
-// // Crear funcion para obtener todos los usuarios (metodo GET)
-// router.get('/users', (req, res) => {
-//     userSchema
-//         .find()
-//         .then((data) => res.json(data))
-//         .catch((error) => console.log({ message: error }))
-// });
+// Crear funcion para obtener todos los usuarios (metodo GET)
+router.get('/users', (req, res) => {
+    userSchema
+        .find()
+        .then((data) => res.json(data))
+        .catch((error) => console.log({ message: error }))
+});
 
 
 // // Crear funcion para actualizar 1 usuario (metodo PUT)
