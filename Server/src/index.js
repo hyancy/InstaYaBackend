@@ -10,12 +10,12 @@ const app = express();
 const PORT = process.env.PORT || 9000;
 // Llamar las rutas para conectar servidos a la API
 const userRoutes = require('./routes/users');
-const servicRoutes = require('./routes/services');
+const ordenRoutes = require('./routes/orders');
 
 //Crear las middlewares Functions para la conexión
 app.use(express.json());
-app.use(cors())
-app.use('/api', userRoutes, servicRoutes);
+// app.use(cors());
+app.use('/api', userRoutes, ordenRoutes);
 
 
 // Iniciamos la conexion a la base de datos 

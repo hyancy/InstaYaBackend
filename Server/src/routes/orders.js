@@ -2,13 +2,13 @@
 const express = require('express');
 // Crear el enrutador principal para en Routing, usar el metodo Router e express
 const router = express.Router();
-// Importar modelo de datos serviceSchema
-const serviceSchema = require('../models/serviceModel');
+// Importar modelo de datos ordeneschema
+const ordeneschema = require('../models/ordenModel');
 
 // Crear los endpoints/rutas para la API que tenga los metodos HTTP (CRUD)
 // Crear función para crear un servicio nuevo (POST)
-router.post('/services', (req, res) => {
-    const service = serviceSchema(req.body);
+router.post('/ordenes', (req, res) => {
+    const service = ordeneschema(req.body);
     service
         .save()
         .then((data) => res.json(data))
@@ -16,36 +16,36 @@ router.post('/services', (req, res) => {
 });
 
 // Crear funcion para obtener todos los servicios (metodo GET)
-router.get('/services', (req, res) => {
-    serviceSchema
+router.get('/ordenes', (req, res) => {
+    ordeneschema
         .find()
         .then((data) => res.json(data))
         .catch((error) => console.log({ message: error }))
 });
 
 // Crear funcion para obtener 1  servicio (metodo GET)
-router.get('/services/:id', (req, res) => {
+router.get('/ordenes/:id', (req, res) => {
     const { id } = req.params;
-    serviceSchema
+    ordeneschema
         .findById(id)
         .then((data) => res.json(data))
         .catch((error) => console.log({ message: error }))
 });
 
 // Crear funcion para actualizar 1 servicio (metodo PUT)
-router.put('/services/:id', (req, res) => {
+router.put('/ordenes/:id', (req, res) => {
     const { id } = req.params;
     const { name: nombres, name: apellidos, username, email, password } = req.body;
-    serviceSchema
+    ordeneschema
         .updateOne({ _id: id }, { $set: { "name.nombres": nombres, "name.nombres": apellidos, username, email, password } })
         .then((data) => res.json(data))
         .catch((error) => console.log({ message: error }))
 });
 
 // Crear funcion para eliminar 1 servicio (metodo DELETE)
-router.delete('/services/:id', (req, res) => {
+router.delete('/ordenes/:id', (req, res) => {
     const { id } = req.params;
-    serviceSchema
+    ordeneschema
         .deleteOne({ _id: id })
         .then((data) => res.json(data))
         .catch((error) => console.log({ message: error }))

@@ -6,15 +6,15 @@ const mongoose = require('mongoose');
 
 
 const userSchema = mongoose.Schema({
-    name: { type: String, required: true },
+    name: { type: String, required: [true, 'Ingrese nombre'] },
 
-    username: { type: String, required: true, unique: true },
+    username: { type: String, required: [true, 'Ingrese userName'], unique: true },
 
-    email: { type: String, required: true },
+    email: { type: String, required: [true, 'Ingrese email'] },
 
-    password: { type: String, required: true, select: false },
+    password: { type: String, required: [true, 'Ingrese password'], select: false },
 
-    activate: { type: Boolean, required: true, default: true }
+    activate: { type: Boolean, required: [true], default: true }
 });
 
 // userSchema.pre('save', (next) => {
@@ -33,7 +33,7 @@ const userSchema = mongoose.Schema({
 //     });
 // });
 
-const options = { timestamps: true };
+// const options = { timestamps: true };
 
 // Exportar modelo de usuario
-module.exports = mongoose.model('User', userSchema, "users", options);
+module.exports = mongoose.model('User', userSchema);
