@@ -14,8 +14,14 @@ router.post('/users', async (req, res) => {
     user.password = hashedPassword
     // user.password
     user.save()
-        .then((data) => res.json(data))
-        .catch((error) => console.error({ message: error }))
+        .then(() => {
+            res.json({error: false, message: "user created"})
+        })
+        .catch( (error) => {
+            console.error({ message: error });
+            res.send({error: true, message: "user not created"});
+        }
+)
     console.log(`Se ha agregado un nuevo usuario`);
 });
 
