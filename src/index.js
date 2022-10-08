@@ -13,20 +13,22 @@ const PORT = process.env.PORT || 9000;
 const userRoutes = require('./routes/users');
 const ordenRoutes = require('./routes/orders');
 const authRoutes = require('./routes/auth');
+// const loginRoutes = require('./routes/login_respaldo');
 
 //Crear las middlewares Functions para la conexión
 app.use(express.json());
-app.use(cors())
-app.use(morgan('dev'))
-app.use('/api', userRoutes, ordenRoutes);
-app.use('/auth', authRoutes);
+app.use(cors());
+app.use(morgan('dev'));
+app.use('/api', userRoutes, ordenRoutes, authRoutes);
+// app.use('/auth', authRoutes);
+
 
 
 // Iniciamos la conexion a la base de datos 
 mongoose
-    .connect(process.env.MONGODB_URI)
-    .then(() => console.log('Connection established. Conected to MongoDB Atlas'))
-    .catch(err => console.log('Error connecting to mongodb: ', err));
+  .connect(process.env.MONGODB_URI)
+  .then(() => console.log('Connection established. Conected to MongoDB Atlas'))
+  .catch(err => console.log('Error connecting to mongodb: ', err));
 
 // Iniciar nuestro servidor y ponerlo en escucha
 app.listen(PORT, () => console.log('CORS-enabled. Server listening in port ', PORT));
