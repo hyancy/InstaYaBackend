@@ -22,7 +22,7 @@ router.post('/Login', async (req, res, next) => {
     //Validar datos de ingreso del usuario
     if (!(username && password)) {
       res.status(400).json({ message: "Ingresar nombre de usuario y contraseña" });
-    } 
+    }
     if (!username || !password) {
       res.status(400).json({ message: "Ingresar nombre de usuario y contraseña" });
     }
@@ -46,10 +46,10 @@ router.post('/Login', async (req, res, next) => {
 });
 
 router.get("/Login/findAllOrders", authMiddleware, (req, res, next) => {
-  orders.find().exec()
-    .then((data) => {
-      res.status(200).json(data); //
-    })
+  orders.find({}).populate('user', {
+    username: 1,
+  }).exec()
+    .then((data) => { res.status(200).json(data) })
     .catch((error) => {
       console.log(error)
       res.status(404).json({ message: "Not data found" });
@@ -71,6 +71,10 @@ router.get("/Login/findAllOrders", authMiddleware, (req, res, next) => {
 //     console.log('wrong id or password!');
 //     return res.send({ error: "Wrong ID or Password" });
 // }
+
+router('/Logout', function(req, res) {
+
+});
 
 app.use(notFound);
 app.use(handleErrors);

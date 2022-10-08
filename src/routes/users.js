@@ -38,13 +38,23 @@ router.post("/signup", async (req, res, next) => {
       encryptedPassword = await bcrypt.hash(password, 12);
 
       // Creamos un usuario en la DB
-      const user = await userSchema.create({
-        name,
-        username,// sanitize: convert username to lowercase
-        email,
-        password: encryptedPassword,
-      });
-      res.status(200).json(user);
+      // const user = await userSchema.create({
+      //   name,
+      //   username,// sanitize: convert username to lowercase
+      //   email,
+      //   password: encryptedPassword,
+      // });
+      // res.status(200).json(user);
+
+      const user = userSchema(req.body);
+      const hashedPassword = await bcrypt.hash(req.body.password, 12)
+      user.password = hashedPassword
+      // user.password
+      user.save()
+        .then((data) => res.json(data))
+        .then(() => res.status(200))
+        .catch((error) => console.error({ message: error }))
+      console.log('Se ha agregado un nuevo usuario');
     }
   } catch (error) {
     next(error);
