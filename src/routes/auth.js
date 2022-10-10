@@ -12,27 +12,28 @@ const { authenticateToken } = require('../../middleware/authMiddleware')
 router.post('/signin', async (req, res, next) => {
   try {
     // Obtener datos de ingreso del usuario
-    const { username, password } = req.body
+    let { username, password } = req.body
+      password = String(password);
     //Validar datos de ingreso del usuario
-    if (!(username && password)) {
-      res.status(400).json({ message: "Ingresar nombre de usuario y contraseña" });
-    }
     if (!username || !password) {
-      res.status(400).json({ message: "Ingresar nombre de usuario y contraseña" });
-    }
-    // Validar si el usuario existe en la base de datos
-    const user = await userSchema.findOne({ username });
+        res.status(400).send({message: "error"})
+    }else{
 
-    if (user && (await bcrypt.compare(password, user.password))) {
-      // const accessToken = generateAccessToken(user._id, user.username);
+    const user = await userSchema.findOne({ username });
+    const match = await bcrypt.compare(password, user.password)
+
+    if (match) {
       const accessToken = jwt.sign(user.name, process.env.JWT_SECRET)
       res.status(200).json({ accessToken: accessToken });
-      console.log(`El usuario: ${user.name} ha realizado un inicio de sesión exitosamente desde ${req.socket.remoteAddress}`);
+      console.log(`El usuario: ${user.name} ha realizado un inicio de sesión exitosamente `);
       req.session.user = user;
       // res.send(user)
-    } else {
-      res.status(401).json({ message: "Usuario o contraseña no existen" });
+    }else{
+      res.status(400).json({ message: "No existe el usuario" });
     }
+    }
+    // Validar si el usuario existe en la base de datos
+     
 
   } catch (error) {
     next(error);
