@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const morgan = require('morgan')
 require('dotenv').config();
 const cors = require('cors');
+const session = require('express-session');
 // Ejecutamos la funcion express de express para iniciar la creación del servidor
 const app = express();
 // Establecer un puerto para correr nuestro servidor
@@ -19,6 +20,15 @@ const authRoutes = require('./routes/auth');
 app.use(express.json());
 app.use(cors());
 app.use(morgan('dev'));
+
+app.use(session({
+    secret: `${process.env.SECRET_SESSION}`,
+    resave: false,
+    saveUninitialized: true,
+}));
+
+
+// Routes
 app.use('/api', userRoutes, ordenRoutes, authRoutes);
 // app.use('/auth', authRoutes);
 

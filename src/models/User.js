@@ -10,8 +10,6 @@ const userSchema = mongoose.Schema({
 
   password: { type: String },
 
-  passwordConfirmation: { type: String },
-
   activate: { type: Boolean, default: true },
 
   role: { type: String, enum: ['ADMIN', 'USER'], default: 'USER' },

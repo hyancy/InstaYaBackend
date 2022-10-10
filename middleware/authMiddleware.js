@@ -1,25 +1,21 @@
-const { verifyAccessToken } = require('../services/jwt');
-const ApiError = require('../utils/ApiError');
+const jwt = require('jsonwebtoken');
 
-function authMiddleware(req, res, next) {
-  const accessToken = req.headers.authorization ? req.headers.authorization.split(' ')[1] : '';
-  try {
-    if (accessToken == null || accessToken == "") {
-      // res.status(401).json({message:"Access token required"});
-      throw new ApiError("Access token Invalid", 401);
-    }
-    const user = verifyAccessToken(accessToken);
+function authenticateToken(req, res, next) {
 
-    if (user._id && user.username) {
-      console.log('Authorized token')
-    }
+  // We will pass token in the following format => "token"
 
+  const accessToken = req.headers['authorization'];
+
+  if (accessToken == null)
+  return res.sendStatus(401);
+
+  jwt.verify(accessToken , process.env.JWT_SECRET,(err,data)=>{
+    if (err) return res.status(402).send(err);
+    req.user = data;
     next();
-  } catch ({ message, statusCode }) {
-    res.status(401).json({ message: "Access token Invalid" });
-  }
+  })
 }
 
 module.exports = {
-  authMiddleware,
+  authenticateToken,
 };
