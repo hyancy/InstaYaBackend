@@ -8,18 +8,23 @@ const jwt = require('jsonwebtoken');
 const notFound = require('../../middleware/notFound');
 const handleErrors = require('../../middleware/handleErrors');
 const { authenticateToken } = require('../../middleware/authMiddleware')
+const { ApiError } = require('../../utils/ApiError')
 
 router.post('/signin', async (req, res, next) => {
   try {
     // Obtener datos de ingreso del usuario
     let { username, password } = req.body
-      password = String(password);
     //Validar datos de ingreso del usuario
     if (!username || !password) {
         res.status(400).send({message: "error"})
     }else{
 
     const user = await userSchema.findOne({ username });
+
+    if (user == null){
+        return res.status(400).send({error: "el usuario no existe"})
+    }
+
     const match = await bcrypt.compare(password, user.password)
 
     if (match) {
@@ -46,44 +51,30 @@ router.post('/signin', async (req, res, next) => {
 router.post("/signup", async (req, res, next) => {
   try {
     // Obtener datos para el registro del un nuevo usuario 
-    const { name, username, email, password, passwordConfirmation } = req.body;
+    const { name, username, email, password } = req.body;
     // Validar los datos para el registro del usuario nuevo
-    if (!(email && password && name && username && passwordConfirmation)) {
-      throw new ApiError("Debe llenar todos los datos", 400);
-    } else if (password !== passwordConfirmation) {
-      throw new ApiError("Las contraseñas no coinciden", 400);
+    if (!(email && password && name && username )) {
+      throw res.status(400).send({ error: "Debe llenar todos los datos" });
     } else {
       // Validamos la existencia del usuario en la base de datos
       const oldUser = await userSchema.findOne({ username });
 
       if (oldUser) {
-        throw new ApiError("El usuario ya existe. Por favor haga Login", 400);
+        return res.status(400).send({error: "El usuario ya existe"})
       }
-      //Encrypt user password
-      encryptedPassword = await bcrypt.hash(password, 12);
-
-      // Creamos un usuario en la DB
-      // const user = await userSchema.create({
-      //   name,
-      //   username,// sanitize: convert username to lowercase
-      //   email,
-      //   password: encryptedPassword,
-      // });
-      // res.status(200).json(user);
 
       const user = userSchema(req.body);
       const hashedPassword = await bcrypt.hash(req.body.password, 12)
       user.password = hashedPassword
       // user.password
       user.save()
-        .then((data) => res.json(data))
         .then(() => res.status(200))
         .catch((error) => console.error({ message: error }))
       console.log('Se ha agregado un nuevo usuario');
+      res.status(200).send({message: "usuario creado con exito"})
     }
   } catch (error) {
-    next(error);
-    console.log(error);
+      console.log(error)
   }
 
 });
