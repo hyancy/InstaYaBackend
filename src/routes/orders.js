@@ -13,6 +13,7 @@ const { validationResult } = require('express-validator');
 const ApiError = require('../../utils/ApiError');
 const notFound = require('../../middleware/notFound');
 const handleErrors = require('../../middleware/handleErrors');
+const { authenticateToken } = require('../../middleware/authMiddleware');
 
 // Crear los endpoints/rutas para la API que tenga los metodos HTTP (CRUD)
 // Crear función para crear un servicio nuevo (POST)
@@ -39,7 +40,7 @@ router.post('/crearOrden', (req, res) => {
 });
 
 // Crear funcion para obtener todos los servicios (metodo GET)
-router.get('/ordenes', (req, res) => {
+router.get('/ordenes', authenticateToken, (req, res) => {
   try {
     ordeneschema
       .find({}).populate('user', {

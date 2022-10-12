@@ -70,7 +70,10 @@ router.get('/users', authenticateToken, (req, res) => {
     } else {
       userSchema
         .find()
-        .then((data) => res.json(data))
+            .then((data) => {
+            res.json(data.filter((user) => user.username == req.user))
+            
+            })
         .catch((error) => console.log({ message: error }))
     }
   } catch (error) {

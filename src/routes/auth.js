@@ -82,8 +82,8 @@ router.post("/signup", async (req, res, next) => {
 
 
 const posts = [
-  {username : "Bob" , title:"superman" , serial : 1},
-  {username : "Allen" , title:"Batman" , serial : 2},
+  {username : "pruebaa" , title:"superman" , serial : 1},
+  {username : "prueba" , title:"Batman" , serial : 2},
   {username : "xhlar" , title:"Iron Man" , serial : 3}
  ];
 
